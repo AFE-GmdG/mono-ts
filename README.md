@@ -265,7 +265,7 @@ Nun erstellen wir eine `tsconfig.json`-Datei, im `mono-lib`-Ordner, um die Bibli
 ```
 Was für ein Monster, oder? Keine Sorge, ich werde die wichtigsten Optionen und Entscheidungen kurz erläutern:
 
-Zuerst deaktivieren wir `compileOnSave`, da wir nicht möchten, dass Typescript automatisch kompiliert, wenn wir eine Datei speichern. Dafür verwenden wir später IDE-Eigene Features und die Fähigkeiten des `vite` Development Servers. Versuchen Sie nicht, dieselben Features von miteinander konkurrierenden Tools zu mischen – das führt nur zu Problemen.
+Zuerst deaktivieren wir `compileOnSave`, da wir nicht möchten, dass Typescript automatisch kompiliert, wenn wir eine Datei speichern. Dafür verwenden wir später IDE-Eigene Features und die Fähigkeiten des `vite` Development Servers. **Versuchen Sie nicht, dieselben Features von miteinander konkurrierenden Tools zu mischen – das führt nur zu Problemen.**
 
 Bei den `compilerOptions` legen wir die Quell- und Ausgabeverzeichnisse fest (`rootDir`, `outDir` und `declarationDir`). Wir aktivieren die Generierung von Source Maps, um das Debuggen des kompilierten JavaScript-Codes zu ermöglichen.
 
@@ -320,6 +320,7 @@ Die generierte `package.json` bearbeiten wir wie folgt:
 
 #### 3.2.2 Source-Code
 Damit wir auch was zum Kompilieren haben, erstellen wir den `src`-Ordner mit der `app.ts`.
+
 `app.ts`:
 ```ts
 import { Greeter } from "mono-lib";
@@ -438,7 +439,7 @@ Dieses Problem beheben wir, indem wir einen Bundler verwenden, welcher die Anwen
 ## 4. Vite als Development Server und Bundler einrichten
 Vite ist ein moderner Development Server und Bundler, der speziell für moderne Webprojekte entwickelt wurde. Er bietet eine schnelle Entwicklungsumgebung mit Hot Module Replacement (HMR) und optimierte Builds für die Produktion. Die hohe Geschwindigkeit wird dadurch erreicht, dass Vite TypeScript komplett umgeht. Statt jede einzelne der möglicherweise hunderten von Dateien in einem großen Projekt zu transpilieren, alle Typecheckings zu machen und das Ganze zu bündeln werden einfach "nur die Typings" entfernt und die Dateien bleiben größtenteils im Originalzustand. Außerdem wird so gut wie nichts vorab kompiliert, sondern erst, wenn eine Datei tatsächlich benötigt wird. Dies macht Vite extrem schnell, besonders bei großen Projekten.
 
-Dafür müssen wir Vite als DevDependency in unserem Monorepo installieren. (DevDependency, weil es nach einem Production-Build nicht mehr benötigt wird.) Zudem wird es nur in `mono-app` installiert, vite besorgt sich die Bibliotheksabhängigkeit nach `mono-lib` selbst (passende Konfiguration vorausgesetzt). Außerdem wollen wir innerhalb der Konfiguration von Vite auf node Systembibliotheken zugreifen. Typescript Typings für Node erhalten wir mit dem zusätzlichen Paket `@types/node`.
+Dafür müssen wir Vite als DevDependency in unserem Monorepo installieren. (DevDependency, weil es nach einem Production-Build nicht mehr benötigt wird.) Zudem wird es nur in `mono-app` installiert, vite besorgt sich die Bibliotheksabhängigkeit nach `mono-lib` selbst (passende Konfiguration vorausgesetzt). Außerdem wollen wir innerhalb der Konfiguration von Vite auf Node Systembibliotheken zugreifen. Typescript Typings für Node erhalten wir mit dem zusätzlichen Paket `@types/node`.
 
 ```bash
 cd ~/git/mono-ts
@@ -517,7 +518,7 @@ Schlussendlich gibt es noch den `server`-Abschnitt, mit dem wir den Development 
 
 `cors: true` aktiviert Cross-Origin Resource Sharing (CORS) für den Development Server. Dies ist nützlich, wenn Sie APIs oder Ressourcen von anderen Domains während der Entwicklung ansprechen müssen.
 
-Zu guter Letzt erlaubt die `fs`-Option den Zugriff auf übergeordnete Verzeichnisse. Da sich unsere Bibliothek im übergeordneten Ordner befindet, ist dies notwendig, damit Vite darauf zugreifen kann. Andernfalls würde Vite den Zugriff verweigern und Fehler ausgeben.
+Zu guter Letzt erlaubt die `fs`-Option den Zugriff auf übergeordnete Verzeichnisse. Da sich unsere Bibliothek im übergeordneten Ordner befindet, ist dies notwendig, damit Vite darauf zugreifen kann. Andernfalls würde Vite den Zugriff verweigern und Fehler ausgeben. (Web Root Escape) Für den Development Server ist dies in Ordnung, im Production-Build müssen Sie ihren Webserver entsprechend konfigurieren, damit ein Root-Escape nicht möglich ist!
 
 ### 4.2 Die HTML-Datei erstellen
 Vite betrachtet die HTML-Datei `index.html` automatisch als Einstiegspunkt für die Anwendung. Die Quellcode-Datei `app.ts` wird darin referenziert und Vite taucht von dort automatisch in alle abhängigen Dateien und Module ein. Aus einem mir nicht nachvollziehbaren Grund sucht Vite die HTML-Datei standardmäßig im Root-Verzeichnis des Projekts, nicht im `src`-Ordner. Daher legen wir die Datei direkt im `mono-app`-Ordner an. Die Datei dient dabei als Vorlage, es ist nicht die Datei, die später beim Production-Build im `dist`-Ordner landet.
@@ -855,7 +856,7 @@ Erstellen wir im Root-Verzeichnis die Datei `mono-ts.code-workspace`.
 Was passiert hier?
 
 Es gibt mehrere Abschnitte in der Workspace-Datei:
-1. **Folders Section**: Anstatt nur den Root-Ordner zu sehen, definieren wir drei logische Ordner. mono-app und mono-lib erscheinen als Top-Level-Einträge im Explorer. Das macht das Arbeiten in tiefen Strukturen viel angenehmer. Den Root-Ordner binden wir als (Root) ebenfalls ein, damit wir Zugriff auf package.json, tsconfig.json etc. haben. Wichtig: In den settings unter files.exclude blenden wir den physischen packages-Ordner aus, um Duplikate in der Ansicht zu vermeiden.
+1. **Folders Section**: Anstatt nur den Root-Ordner zu sehen, definieren wir drei logische Ordner. mono-app und mono-lib erscheinen als Top-Level-Einträge im Explorer. Das macht das Arbeiten in tiefen Strukturen viel angenehmer. Den Root-Ordner binden wir als (Root) ebenfalls ein, damit wir Zugriff auf package.json, tsconfig.json etc. haben. Wichtig: In den settings unter `files.exclude` blenden wir den physischen packages-Ordner aus, um Duplikate in der Ansicht zu vermeiden.
 2. **Settings Section**: Hier erzwingen wir Formatierungsregeln für jeden, der diesen Workspace öffnet. Keine Diskussionen mehr über Tabs vs. Spaces!
 3. **Tasks Section**: Wir definieren einen Task `Start Vite Server`. Dieser führt im Hintergrund `yarn` aus. Das `problemMatcher`-Feld ist hier auf "Hintergrund" konfiguriert. Es wartet darauf, dass Vite "ready" in die Konsole schreibt, bevor es dem Debugger das "Go" gibt.
 4. **Launch Section**: Das ist das Herzstück. Die Konfiguration `Chrome (Debug mono-app)` startet Google Chrome.
@@ -868,7 +869,14 @@ Es gibt mehrere Abschnitte in der Workspace-Datei:
 2. Unten rechts in VS Code erscheint (meistens) ein Button "Workspace öffnen". Falls nicht: `Datei` -> `Arbeitsbereich aus Datei öffnen...`.
 3. VS Code lädt neu und die Struktur im Explorer ändert sich.
 4. Öffnen Sie `packages/mono-app/src/app.ts` (Jetzt im virtuellen Ordner `mono-app/src/app.ts`).
-5. Setzen Sie einen Breakpoint (roter Punkt links neben der Zeilennummer) in der Zeile `const greeter = new Greeter(name);`. Setzen Sie einen weiteren Breakpoint in der `mono-lib/src/greeter.ts` in der Zeile `return `Hello, ${this.name}!`;`.
+5. Setzen Sie einen Breakpoint (roter Punkt links neben der Zeilennummer) in der Zeile
+   ```ts
+     const greeter = new Greeter(name);
+   ```
+   Setzen Sie einen weiteren Breakpoint in der `mono-lib/src/greeter.ts` in der Zeile
+   ```ts
+     return `Hello, ${this.name}!`;
+   ```
 6. Drücken Sie F5. (Alternativ: Klicken Sie in der Seitenleiste auf das Debug-Symbol und dann auf den grünen Play-Button. Im Dropdown-Menü sollte "Chrome (Debug mono-app)" ausgewählt sein.)
 
 Wenn alles geklappt hat, öffnet sich Chrome. Geben Sie einen Namen ein, klicken Sie auf "Greet" und... **BÄM!** VS Code springt in den Vordergrund, die Ausführung stoppt an Ihrem Breakpoint. Sie können Variablen inspizieren, den Call-Stack prüfen und sogar in die `mono-lib` hinein steppen ("Step Into" oder F11), da wir `declarationMap` aktiviert haben. Selbst Breakpoints in der Bibliothek funktionieren einwandfrei!
@@ -918,7 +926,9 @@ yarn-error.log*
 **Wichtig:** Ich ignoriere hier den kompletten `.vscode`-Ordner. Unsere Konfiguration und Debugging-Einstellungen sind im Workspace definiert. Einige Plugins und Erweiterungen – oder vielleicht Sie selbst – können im `.vscode`-Ordner personalisierte Konfigurationen hinterlegen, welche nicht mit anderen Teammitgliedern geteilt werden sollten. Nicht jeder verwendet die selben Extensions. Persönliche Einstellungen haben im Git nichts verloren.
 
 ## 7. ESLint - Die Style-Polizei
-Wir werden eine **Flat Config** für ESLint verwenden. Frühere Versionen von ESLint verwendeten verschiedene, teils zueinander inkombatible Konfigurationsdateien (JSON, YAML, JS). Die `Flat Config` ist eine neuere, modernere Art der Konfiguration, die auf JavaScript-Dateien basiert. Diese ermöglicht es, die Konfiguration in modulare Teile zu zerlegen und diese bei Bedarf zu importieren. Es gibt diverse öffentlich verfügbare Konfigurationspakete an denen man sich bedienen kann. Die Root-Konfigurationsdatei trägt den Namen `eslint.config.js`.
+Wir werden eine **Flat Config** für ESLint verwenden. Frühere Versionen von ESLint verwendeten verschiedene, teils zueinander inkombatible Konfigurationsdateien (JSON, YAML, JS). Die `Flat Config` ist eine neuere, modernere Art der Konfiguration, die auf JavaScript-Dateien basiert. Diese ermöglicht es, die Konfiguration in modulare Teile zu zerlegen und diese bei Bedarf zu importieren. Es gibt diverse öffentlich verfügbare Konfigurationspakete an denen man sich bedienen kann. Die Root-Konfigurationsdatei trägt den Namen `eslint.config.js` und befindet sich direkt im Root-Ordner des Repositories.
+
+`eslint.config.js`:
 ```js
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
@@ -1072,6 +1082,7 @@ export default [
 ];
 ```
 Da wir in dieser Datei einen Verweis auf eine `tsconfig.eslint.json`-Datei haben, müssen wir diese ebenfalls anlegen:
+
 `tsconfig.eslint.json`:
 ```jsonc
 {
@@ -1119,6 +1130,7 @@ Done in 1.37s.
 ```
 
 Ja, wir haben in unserer Bibliothek in der Hauptdatei nur einen einzigen Reexport. Laut unserer Linter-Regeln sollten wir in diesem Fall einen Default-Export verwenden. Das wollen wir für diese Datei aber nicht machen. Wir können die Warnung ignorieren, die Regel lockern oder eine Inline-Ausnahme hinzufügen:
+
 `index.ts`:
 ```ts
 // eslint-disable-next-line import/prefer-default-export
@@ -1147,6 +1159,7 @@ Zum Schluss blenden wir noch allen unnützen Clutter im Explorer aus, indem wir 
       "packages": true, // Hide the monorepo packages folder itself from the (Additional Files) view
     },
 ```
+Die `mono-ts.code-workspace`-Datei bleibt im `(Root)`-Ordner des Explorers sichtbar, ebenso wie die `package.json` Alle anderen Dateien (ESLint bezogene, Logs, Lockfiles, die gitignore etc.) werden ausgeblendet. Sollten Sie eine der Dateien doch einmal benötigen, können Sie diese hier wieder einblenden. Das `dist`-Verzeichnis lasse ich mal sichtbar, da es manchmal nützlich ist, sich die erzeugten Ergebnisse anzusehen. Wenn Sie diese nicht sehen wollen, blenden Sie diese einfach aus.
 
 ## 8. Fazit
 Und Damit haben wir es geschafft! Sie haben soeben ein professionelles, modernes Monorepo von Grund auf neu erstellt.
