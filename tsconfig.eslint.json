@@ -1,0 +1,9 @@
+{
+  "extends": "./packages/mono-app/tsconfig.json",
+  "include": [
+    "packages/mono-app/src",
+    "packages/mono-app/vite.config.ts",
+    "packages/mono-lib/src",
+    "eslint.config.js",
+  ],
+}
