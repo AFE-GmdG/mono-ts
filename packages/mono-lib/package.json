@@ -7,8 +7,8 @@
   "types": "dist/index.d.ts",
   "private": true,
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "tsc",
+    "lint": "eslint",
     "clean": "rimraf dist"
   },
   "devDependencies": {

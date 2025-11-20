@@ -1,54 +1,18 @@
 {
-  "compileOnSave": false,
+  "extends": "../../tsconfig.base.json",
 
   "compilerOptions": {
     "outDir": "dist",
-    "sourceMap": true,
-
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "target": "ES2024",
 
     "baseUrl": ".",
     "paths": {
       "mono-lib": ["../mono-lib/src"],
       "mono-lib/*": ["../mono-lib/src/*"],
     },
-
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictBindCallApply": true,
-    "strictPropertyInitialization": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": true,
-    "alwaysStrict": true,
-
-    "forceConsistentCasingInFileNames": true,
-    "newLine": "LF",
-    "pretty": true,
-    "removeComments": true,
-    "skipLibCheck": true,
-    "lib": [
-      "dom",
-      "ESNext",
-    ],
   },
 
   "include": [
     "src",
     "../mono-lib/src"
-  ],
-
-  "exclude": [
-    "dist",
-    "node_modules",
   ],
 }

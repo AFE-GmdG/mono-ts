@@ -1,9 +1,16 @@
 {
-  "extends": "./packages/mono-app/tsconfig.json",
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "allowJs": true, // Allow JavaScript files to be compiled - Necessary for the eslint.config.js file
+  },
   "include": [
     "packages/mono-app/src",
     "packages/mono-app/vite.config.ts",
     "packages/mono-lib/src",
     "eslint.config.js",
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
   ],
 }

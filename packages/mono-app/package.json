@@ -9,6 +9,7 @@
     "dev": "vite",
     "prebuild": "rimraf dist",
     "build": "vite build",
+    "lint": "eslint",
     "clean": "rimraf dist"
   },
   "dependencies": {

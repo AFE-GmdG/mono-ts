@@ -10,8 +10,8 @@
   "scripts": {
     "dev": "yarn workspace mono-app run dev",
     "build": "yarn workspace mono-lib build && yarn workspace mono-app build",
-    "clean": "yarn workspaces run clean",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "yarn workspaces run clean"
   },
   "devDependencies": {
     "@stylistic/eslint-plugin": "^5.6.1",

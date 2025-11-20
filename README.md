@@ -1181,3 +1181,13 @@ Vielleicht schauen Sie sich als Nächstes **Vitest** an, um Unit-Tests in Ihr Mo
 Aber für heute: Klopfen Sie sich auf die Schulter. Sie haben die Werkzeuge der Profis gemeistert.
 
 Happy Coding!
+
+## Nachtrag:
+Aufgrund von Rückmeldungen habe ich einige kleinere Korrekturen und Ergänzungen in den Codedateien vorgenommen. Insbesondere wurden die doppelten Konfigurationen der `tsconfig.json` in `mono-app` und `mono-lib` in eine `tsconfig.base.json` im Root-Verzeichnis ausgelagert. Daher haben sich dann auch einige Einstellungen und Pfade in den jeweiligen Konfigurationen der Pakete geändert. Auch die `tsconfig.eslint.json` profitiert von der neuen Basis-Konfiguration. Die `eslint.config.js` wurde bisher von ihren eigenen Regeln befreit. Jetzt ist sie wieder Teil der Lint-Prüfung, sie prüft sich quasi selbst.
+
+Die Scripte in den einzelnen `package.json` wurden angepasst, um die Befehle aus allen Paketen und dem Root-Verzeichnis heraus starten zu können.
+
+Im [Github mono-ts Repository](https://github.com/AFE-GmdG/mono-ts) findet Ihr die jeweils aktuellste Version des Monorepo-Projekts.
+
+Einen Schönen Tag noch,
+Andreas Friedel
